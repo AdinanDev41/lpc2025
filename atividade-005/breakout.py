@@ -2,8 +2,6 @@ import pygame
 
 pygame.init()
 
-# a
-
 # Define some colors
 WHITE = (255, 255, 255)
 DARKBLUE = (36, 90, 190)
