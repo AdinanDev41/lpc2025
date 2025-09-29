@@ -95,9 +95,24 @@ def draw_text(surface, text, size, x, y, color=WHITE):
     text_rect = text_surface.get_rect(center=(x, y))
     surface.blit(text_surface, text_rect)
 
-
+def generate_blocks(rows, cols, start_x, start_y,
+                    block_width, block_height, padding, colors=None):
+    # Generate blocks for the game grid.
+    blocks = pygame.sprite.Group()
+    for row in range(rows):
+        for col in range(cols):
+            x = start_x + col * (block_width + padding)
+            y = start_y + row * (block_height + padding)
+            color = (colors[row % len(colors)]
+                     if colors else (random.randint(50, 255),
+                                     random.randint(50, 255),
+                                     random.randint(50, 255)))
+            block = Block(x, y, block_width, block_height, color, row)
+            blocks.add(block)
+    return blocks
 
 # Main Game Loop
 def main_game_loop():
     pygame.init()
+
 
