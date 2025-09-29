@@ -150,5 +150,11 @@ def main_game_loop():
     paddle_sound = safe_load_sound(paddle_sound_path)  # paddle hit sound
     block_sound = safe_load_sound(block_sound_path)  # block hit sound
     life_lost_sound = safe_load_sound(life_lost_sound_path)  # life lost sound
-
-
+    
+    # default volumes
+    if paddle_sound:
+        paddle_sound.set_volume(0.6)
+    if block_sound:
+        block_sound.set_volume(0.5)
+    if life_lost_sound:
+        life_lost_sound.set_volume(0.7)
