@@ -59,3 +59,21 @@ class Ball(pygame.sprite.Sprite):
         self.speed_x = speed_x if random.choice([True, False]) else -speed_x
         self.speed_y = -abs(speed_y)
         self.hit_cooldown = 0
+
+class Paddle(pygame.sprite.Sprite):
+    # Represents the paddle.
+
+    def init(self, x, y, width, height, color):
+        super().init()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.width = width
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and self.rect.left > 0:
+            self.rect.x -= PADDLE_SPEED
+        if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
+            self.rect.x += PADDLE_SPEED
+
