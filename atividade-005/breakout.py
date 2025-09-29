@@ -60,11 +60,13 @@ class Ball(pygame.sprite.Sprite):
         self.speed_y = -abs(speed_y)
         self.hit_cooldown = 0
 
+
+# Paddle Class
 class Paddle(pygame.sprite.Sprite):
     # Represents the paddle.
 
-    def init(self, x, y, width, height, color):
-        super().init()
+    def __init__(self, x, y, width, height, color):
+        super().__init__()
         self.image = pygame.Surface([width, height])
         self.image.fill(color)
         self.rect = self.image.get_rect(center=(x, y))
@@ -77,16 +79,19 @@ class Paddle(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
             self.rect.x += PADDLE_SPEED
 
+
+# Block Class
 class Block(pygame.sprite.Sprite):
     # Represents a block in the game.
 
-    def init(self, x, y, width, height, color, row):
-        super().init()
+    def __init__(self, x, y, width, height, color, row):
+        super().__init__()
         self.image = pygame.Surface([width, height])
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.row = row
-        
+
+
 # Utility Functions
 def draw_text(surface, text, size, x, y, color=WHITE):
     # Draw text on the screen.
@@ -94,6 +99,7 @@ def draw_text(surface, text, size, x, y, color=WHITE):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect(center=(x, y))
     surface.blit(text_surface, text_rect)
+
 
 def generate_blocks(rows, cols, start_x, start_y,
                     block_width, block_height, padding, colors=None):
@@ -111,6 +117,7 @@ def generate_blocks(rows, cols, start_x, start_y,
             blocks.add(block)
     return blocks
 
+
 # Main Game Loop
 def main_game_loop():
     pygame.init()
@@ -123,7 +130,7 @@ def main_game_loop():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Breakout Pygame")
     clock = pygame.time.Clock()
-    
+
     # sounds
     base_sound_path = (os.path.join(os.path.dirname(__file__), "assets")
                        if "__file__" in globals() else "sounds")
@@ -134,7 +141,7 @@ def main_game_loop():
     paddle_sound = None
     block_sound = None
     life_lost_sound = None
-    
+
     # helper function to load sounds safely
     def safe_load_sound(path):
         try:
@@ -146,11 +153,11 @@ def main_game_loop():
         except Exception as e:
             print(f"Warning while loading sound '{path}':", e)
             return None
-            
+
     paddle_sound = safe_load_sound(paddle_sound_path)  # paddle hit sound
     block_sound = safe_load_sound(block_sound_path)  # block hit sound
     life_lost_sound = safe_load_sound(life_lost_sound_path)  # life lost sound
-    
+
     # default volumes
     if paddle_sound:
         paddle_sound.set_volume(0.6)
@@ -175,11 +182,6 @@ def main_game_loop():
     balls.add(ball)
 
     paddle = Paddle(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30,
-                    PADDLE_WIDTH, PADDLE_HEIGHT, WHITE)
-    all_sprites.add(paddle)
-    paddles.add(paddle)
-
-     paddle = Paddle(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30,
                     PADDLE_WIDTH, PADDLE_HEIGHT, WHITE)
     all_sprites.add(paddle)
     paddles.add(paddle)
@@ -255,31 +257,40 @@ def main_game_loop():
                 ball.speed_y = (-abs(ball.speed_y)
                                 if ball.speed_y > 0 else -abs(ball.speed_y))
                 ball.rect.bottom = paddle.rect.top - 1
-                
+
+                # play paddle collision sound
+                if paddle_sound and ball.hit_cooldown == 0:
+                    try:
+                        paddle_sound.play()
+                    except Exception:
+                        pass
+
+            # ball-block collision
             hits = pygame.sprite.spritecollide(ball, blocks, dokill=True)
             if hits and ball.hit_cooldown == 0:
-                
                 ball.speed_y *= -1
                 score += 10 * len(hits)
 
-               
+                # smoother speed multipliers
                 for h in hits:
                     multipliers = [1.15, 1.1, 1.05, 1.02, 1.0]
                     row_index = min(h.row, len(multipliers) - 1)
                     m = multipliers[row_index]
                     ball.speed_x *= m
                     ball.speed_y *= m
-                    # play block collision sound
-                    if block_sound:
-                      try:
+
+                # play block collision sound
+                if block_sound:
+                    try:
                         block_sound.play()
-                      except Exception:
+                    except Exception:
                         pass
-                
+
                 ball.hit_cooldown = 10  # delay (~10 frames)
 
             if len(blocks) == 0:
-            game_state = "WIN"
+                game_state = "WIN"
+
         # Drawing
         screen.fill(BLACK)
         if game_state == "MENU":
@@ -322,6 +333,7 @@ def main_game_loop():
         clock.tick(FPS)
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main_game_loop()
