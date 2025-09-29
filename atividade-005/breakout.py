@@ -77,3 +77,14 @@ class Paddle(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
             self.rect.x += PADDLE_SPEED
 
+class Block(pygame.sprite.Sprite):
+    # Represents a block in the game.
+
+    def init(self, x, y, width, height, color, row):
+        super().init()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.row = row
+
+
