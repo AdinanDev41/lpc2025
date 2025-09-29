@@ -277,3 +277,4 @@ def main_game_loop():
                     except Exception:
                         pass
 
+                ball.hit_cooldown = 10  # delay (~10 frames)
