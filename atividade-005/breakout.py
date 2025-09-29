@@ -114,5 +114,15 @@ def generate_blocks(rows, cols, start_x, start_y,
 # Main Game Loop
 def main_game_loop():
     pygame.init()
+    # initialize mixer (sound)
+    try:
+        pygame.mixer.init()
+    except Exception as e:
+        print("Warning: pygame.mixer.init() failed:", e)
+
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Breakout Pygame")
+    clock = pygame.time.Clock()
+
 
 
