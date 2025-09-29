@@ -146,4 +146,9 @@ def main_game_loop():
         except Exception as e:
             print(f"Warning while loading sound '{path}':", e)
             return None
+            
+    paddle_sound = safe_load_sound(paddle_sound_path)  # paddle hit sound
+    block_sound = safe_load_sound(block_sound_path)  # block hit sound
+    life_lost_sound = safe_load_sound(life_lost_sound_path)  # life lost sound
+
 
