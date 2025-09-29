@@ -134,8 +134,16 @@ def main_game_loop():
     paddle_sound = None
     block_sound = None
     life_lost_sound = None
-
-
-
-
+    
+    # helper function to load sounds safely
+    def safe_load_sound(path):
+        try:
+            if os.path.exists(path):
+                s = pygame.mixer.Sound(path)
+                return s
+            else:
+                return None
+        except Exception as e:
+            print(f"Warning while loading sound '{path}':", e)
+            return None
 
