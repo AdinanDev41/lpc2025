@@ -198,3 +198,32 @@ def main_game_loop():
     for b in blocks:
         all_sprites.add(b)
 
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if game_state == "MENU":
+                        game_state = "PLAYING"
+                        score = 0
+                        lives = 3
+                        level = 1
+                        blocks.empty()
+                        blocks = generate_blocks(rows, cols, start_x, start_y,
+                                                 block_width, block_height,
+                                                 padding, colors)
+                        all_sprites.empty()
+                        all_sprites.add(ball, paddle)
+                        for b in blocks:
+                            all_sprites.add(b)
+                        ball.reset_position(SCREEN_WIDTH // 2,
+                                            SCREEN_HEIGHT // 2)
+                    elif game_state == "PAUSED":
+                        game_state = "PLAYING"
+                    elif game_state == "PLAYING":
+                        game_state = "PAUSED"
+                elif event.key == pygame.K_r and (game_state == "GAME_OVER"
+                                                  or game_state == "WIN"):
+                    game_state = "MENU"
