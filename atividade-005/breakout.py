@@ -227,3 +227,9 @@ def main_game_loop():
                 elif event.key == pygame.K_r and (game_state == "GAME_OVER"
                                                   or game_state == "WIN"):
                     game_state = "MENU"
+
+        if game_state == "PLAYING":
+            all_sprites.update()
+
+            if ball.rect.bottom >= SCREEN_HEIGHT:
+                lives -= 1
