@@ -278,3 +278,7 @@ def main_game_loop():
                    
                 ball.hit_cooldown = 10  # delay (~10 frames)
 
+            if len(blocks) == 0:
+            game_state = "WIN"
+
+
