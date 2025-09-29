@@ -169,3 +169,8 @@ def main_game_loop():
     paddles = pygame.sprite.Group()
     blocks = pygame.sprite.Group()
 
+    ball = Ball(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                BALL_RADIUS, WHITE, BALL_SPEED_X, -BALL_SPEED_Y)
+    all_sprites.add(ball)
+    balls.add(ball)
+
