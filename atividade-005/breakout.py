@@ -233,3 +233,15 @@ def main_game_loop():
 
             if ball.rect.bottom >= SCREEN_HEIGHT:
                 lives -= 1
+                # play life lost sound
+                if life_lost_sound:
+                    try:
+                        life_lost_sound.play()
+                    except Exception:
+                        pass
+                if lives <= 0:
+                    game_state = "GAME_OVER"
+                else:
+                    ball.reset_position(SCREEN_WIDTH // 2,
+                                        SCREEN_HEIGHT // 2)
+
