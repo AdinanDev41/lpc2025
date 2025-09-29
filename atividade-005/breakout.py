@@ -174,3 +174,27 @@ def main_game_loop():
     all_sprites.add(ball)
     balls.add(ball)
 
+    paddle = Paddle(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30,
+                    PADDLE_WIDTH, PADDLE_HEIGHT, WHITE)
+    all_sprites.add(paddle)
+    paddles.add(paddle)
+
+     paddle = Paddle(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 30,
+                    PADDLE_WIDTH, PADDLE_HEIGHT, WHITE)
+    all_sprites.add(paddle)
+    paddles.add(paddle)
+
+    rows = 5
+    cols = 8
+    padding = 8
+    block_width = (SCREEN_WIDTH - (cols + 1) * padding) // cols
+    block_height = 30
+    start_x = padding
+    start_y = 60
+    colors = [(200, 50, 50), (200, 120, 50), (200, 200, 50),
+              (50, 180, 50), (50, 120, 200)]
+    blocks = generate_blocks(rows, cols, start_x, start_y,
+                             block_width, block_height, padding, colors)
+    for b in blocks:
+        all_sprites.add(b)
+
