@@ -158,3 +158,11 @@ def main_game_loop():
         block_sound.set_volume(0.5)
     if life_lost_sound:
         life_lost_sound.set_volume(0.7)
+
+
+    score = 0
+    lives = 3
+    level = 1
+    game_state = "MENU"
+
+
