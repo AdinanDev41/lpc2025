@@ -280,6 +280,48 @@ def main_game_loop():
 
             if len(blocks) == 0:
             game_state = "WIN"
+        # Drawing
+        screen.fill(BLACK)
+        if game_state == "MENU":
+            draw_text(screen, "BREAKOUT", 74,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4, GREEN)
+            draw_text(screen, "Press SPACE to start", 36,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            draw_text(screen, "Left/Right Arrows to move paddle", 24,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT * 3 // 4)
+        elif game_state == "PLAYING":
+            all_sprites.draw(screen)
+            draw_text(screen, f"Score: {score}", 24, 70, 20)
+            draw_text(screen, f"Lives: {lives}", 24,
+                      SCREEN_WIDTH - 70, 20)
+            draw_text(screen, f"Level: {level}", 18,
+                      SCREEN_WIDTH // 2, 20)
+        elif game_state == "PAUSED":
+            all_sprites.draw(screen)
+            draw_text(screen, "PAUSED", 74,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2, YELLOW)
+            draw_text(screen, "Press SPACE to continue", 36,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
+        elif game_state == "GAME_OVER":
+            draw_text(screen, "GAME OVER", 74,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4, RED)
+            draw_text(screen, f"Your final score: {score}", 36,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            draw_text(screen, "Press 'R' to return to Menu", 24,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT * 3 // 4)
+        elif game_state == "WIN":
+            all_sprites.draw(screen)
+            draw_text(screen, "YOU WIN!", 74,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4, GREEN)
+            draw_text(screen, f"Final Score: {score}", 36,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            draw_text(screen, "Press 'R' to return to Menu", 24,
+                      SCREEN_WIDTH // 2, SCREEN_HEIGHT * 3 // 4)
 
+        pygame.display.flip()
+        clock.tick(FPS)
 
+    pygame.quit()
 
+if __name__ == "__main__":
+    main_game_loop()
