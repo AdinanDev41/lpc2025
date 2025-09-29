@@ -123,6 +123,19 @@ def main_game_loop():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Breakout Pygame")
     clock = pygame.time.Clock()
+    
+    # sounds
+    base_sound_path = (os.path.join(os.path.dirname(__file__), "assets")
+                       if "__file__" in globals() else "sounds")
+    paddle_sound_path = os.path.join(base_sound_path, "bullet.wav")
+    block_sound_path = os.path.join(base_sound_path, "hit.wav")
+    life_lost_sound_path = os.path.join(base_sound_path, "sound-damage.mp3")
+
+    paddle_sound = None
+    block_sound = None
+    life_lost_sound = None
+
+
 
 
 
