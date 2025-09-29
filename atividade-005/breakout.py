@@ -245,3 +245,13 @@ def main_game_loop():
                     ball.reset_position(SCREEN_WIDTH // 2,
                                         SCREEN_HEIGHT // 2)
 
+                        # ball-paddle collision
+            if pygame.sprite.spritecollide(paddle, balls, False):
+                offset = ((ball.rect.centerx - paddle.rect.centerx)
+                          / (paddle.width / 2))
+                offset = max(-1, min(1, offset))
+                base_speed = max(abs(ball.speed_x), BALL_SPEED_X)
+                ball.speed_x = base_speed * offset
+                ball.speed_y = (-abs(ball.speed_y)
+                                if ball.speed_y > 0 else -abs(ball.speed_y))
+                ball.rect.bottom = paddle.rect.top - 1
