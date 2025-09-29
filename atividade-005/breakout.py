@@ -256,10 +256,24 @@ def main_game_loop():
                                 if ball.speed_y > 0 else -abs(ball.speed_y))
                 ball.rect.bottom = paddle.rect.top - 1
                 
-                # play paddle collision sound
-                if paddle_sound and ball.hit_cooldown == 0:
+            hits = pygame.sprite.spritecollide(ball, blocks, dokill=True)
+            if hits and ball.hit_cooldown == 0:
+                
+                ball.speed_y *= -1
+                score += 10 * len(hits)
+
+               
+                for h in hits:
+                    multipliers = [1.15, 1.1, 1.05, 1.02, 1.0]
+                    row_index = min(h.row, len(multipliers) - 1)
+                    m = multipliers[row_index]
+                    ball.speed_x *= m
+                    ball.speed_y *= m
+
+                
+                if block_sound:
                     try:
-                        paddle_sound.play()
+                        block_sound.play()
                     except Exception:
                         pass
 
