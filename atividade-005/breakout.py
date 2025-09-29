@@ -159,10 +159,13 @@ def main_game_loop():
     if life_lost_sound:
         life_lost_sound.set_volume(0.7)
 
-
     score = 0
     lives = 3
     level = 1
     game_state = "MENU"
 
+    all_sprites = pygame.sprite.Group()
+    balls = pygame.sprite.Group()
+    paddles = pygame.sprite.Group()
+    blocks = pygame.sprite.Group()
 
