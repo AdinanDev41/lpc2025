@@ -95,3 +95,9 @@ def draw_text(surface, text, size, x, y, color=WHITE):
     text_rect = text_surface.get_rect(center=(x, y))
     surface.blit(text_surface, text_rect)
 
+
+
+# Main Game Loop
+def main_game_loop():
+    pygame.init()
+
