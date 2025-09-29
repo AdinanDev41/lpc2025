@@ -269,12 +269,12 @@ def main_game_loop():
                     m = multipliers[row_index]
                     ball.speed_x *= m
                     ball.speed_y *= m
-
-                
-                if block_sound:
-                    try:
-                        block_sound.play()
-                    except Exception:
-                        pass
-
+                    # play paddle collision sound
+                    if paddle_sound and ball.hit_cooldown == 0:
+                      try:
+                         paddle_sound.play()
+                      except Exception:
+                         pass
+                   
                 ball.hit_cooldown = 10  # delay (~10 frames)
+
