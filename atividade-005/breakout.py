@@ -245,7 +245,7 @@ def main_game_loop():
                     ball.reset_position(SCREEN_WIDTH // 2,
                                         SCREEN_HEIGHT // 2)
 
-                        # ball-paddle collision
+            # ball-paddle collision
             if pygame.sprite.spritecollide(paddle, balls, False):
                 offset = ((ball.rect.centerx - paddle.rect.centerx)
                           / (paddle.width / 2))
@@ -255,3 +255,11 @@ def main_game_loop():
                 ball.speed_y = (-abs(ball.speed_y)
                                 if ball.speed_y > 0 else -abs(ball.speed_y))
                 ball.rect.bottom = paddle.rect.top - 1
+                
+                # play paddle collision sound
+                if paddle_sound and ball.hit_cooldown == 0:
+                    try:
+                        paddle_sound.play()
+                    except Exception:
+                        pass
+
