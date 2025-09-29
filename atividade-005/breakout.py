@@ -86,5 +86,12 @@ class Block(pygame.sprite.Sprite):
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.row = row
-
+        
+# Utility Functions
+def draw_text(surface, text, size, x, y, color=WHITE):
+    # Draw text on the screen.
+    font = pygame.font.Font(None, size)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=(x, y))
+    surface.blit(text_surface, text_rect)
 
