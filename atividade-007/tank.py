@@ -1,6 +1,5 @@
 import math
 import pygame
-from dataclasses import dataclass
 import core
 
 SCREEN_WIDTH = 900
@@ -56,15 +55,22 @@ OBSTACLES = [
 ]
 
 
-@dataclass
 class Bullet:
-    # Represents a tank bullet.
-    x: float
-    y: float
-    vx: float
-    vy: float
-    owner: int
-    life: float
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        vx: float,
+        vy: float,
+        owner: int,
+        life: float,
+    ):
+        self.x = x
+        self.y = y
+        self.vx = vx
+        self.vy = vy
+        self.owner = owner
+        self.life = life
 
     def rect(self) -> pygame.Rect:
         return pygame.Rect(
@@ -161,7 +167,7 @@ class Tank:
         return Bullet(bx, by, vx, vy, owner_id, BULLET_LIFETIME)
 
     def hit(self):
-        """Trigger spin animation when hit."""
+        # Trigger spin animation when hit.
         self.spinning = True
         self.spin_timer = SPIN_DURATION
 
