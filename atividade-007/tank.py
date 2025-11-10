@@ -172,7 +172,6 @@ class Tank:
         self.spin_timer = SPIN_DURATION
 
 
-# Helper functions
 def draw_tank(surface, tank: Tank):
     # Draw tank rotated according to its angle.
     image = tank_img_p1 if tank.color == P1_COLOR else tank_img_p2
