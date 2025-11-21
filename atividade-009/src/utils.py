@@ -48,3 +48,4 @@ def text(surface: pg.Surface, font: pg.font.Font, s: str, x: int, y: int):
     surface.blit(surf, rect)
 
 #teste
+#teste2
