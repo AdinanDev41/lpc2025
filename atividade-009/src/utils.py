@@ -46,6 +46,3 @@ def text(surface: pg.Surface, font: pg.font.Font, s: str, x: int, y: int):
     surf = font.render(s, True, C.WHITE)
     rect = surf.get_rect(topleft=(x, y))
     surface.blit(surf, rect)
-
-#teste
-#teste2
