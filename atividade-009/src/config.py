@@ -36,6 +36,10 @@ UFO_SPAWN_EVERY = 15.0  # segundos
 UFO_SPEED = 80.0
 UFO_BIG = {"r": 18, "score": 200, "aim": 0.2}
 UFO_SMALL = {"r": 12, "score": 1000, "aim": 0.6}
+UFO_FIRE_RATE_SMALL = 1.5
+UFO_FIRE_RATE_BIG = 3.0
+UFO_BULLET_SPEED = 400.0
+
 
 # Cores (R, G, B)
 WHITE = (240, 240, 240)
