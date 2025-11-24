@@ -119,26 +119,76 @@ class Ship(pg.sprite.Sprite):
             draw_circle(surf, self.pos, self.r + 6)
 
 
+# Em src/sprites.py
+
 class UFO(pg.sprite.Sprite):
-    def __init__(self, pos: Vec, small: bool):
+    def __init__(self, pos: Vec, small: bool, target_pos: Vec = None):
         super().__init__()
         self.pos = Vec(pos)
         self.small = small
         self.r = C.UFO_SMALL["r"] if small else C.UFO_BIG["r"]
         self.speed = C.UFO_SPEED
         self.rect = pg.Rect(0, 0, self.r * 2, self.r * 2)
-        self.dir = Vec(1, 0) if uniform(0, 1) < 0.5 else Vec(-1, 0)
 
-        # Play UFO engine sound when it appears on screen
+        # --- LÓGICA DE MOVIMENTO (AQUI ESTÁ A MUDANÇA) ---
+        if self.small and target_pos is not None:
+            # NAVE PEQUENA: "Trajectory Shot"
+            # Calcula o vetor que aponta da nave inimiga para o jogador AGORA.
+            desired_dir = target_pos - self.pos
+            
+            # Normaliza (transforma em tamanho 1, mantendo a direção)
+            if desired_dir.length() > 0:
+                desired_dir = desired_dir.normalize()
+            else:
+                desired_dir = Vec(1, 0) # Fallback se nascer exatamente em cima
+
+            # Adiciona uma aleatoriedade (Jitter) para não ser uma linha reta perfeita "sniper"
+            # Isso faz ela ir "na direção", mas talvez passe um pouco ao lado
+            desired_dir.x += uniform(-0.2, 0.2)
+            desired_dir.y += uniform(-0.2, 0.2)
+            
+            self.dir = desired_dir.normalize()
+            
+        else:
+            # NAVE GRANDE (ou sem alvo):
+            # Comportamento Clássico: horizontal com leve inclinação vertical aleatória
+            # Se nasceu na esquerda (x < width/2), vai pra direita (1), senão pra esquerda (-1)
+            direction_x = 1 if self.pos.x < C.WIDTH / 2 else -1
+            direction_y = uniform(-0.5, 0.5) # Leve movimento vertical
+            self.dir = Vec(direction_x, direction_y).normalize()
+        # ----------------------------------------------------
+
+        # Configuração do Tiro (Mantivemos igual)
+        self.shoot_timer = uniform(0, 1.0)
+        self.shoot_delay = C.UFO_FIRE_RATE_SMALL if small else C.UFO_FIRE_RATE_BIG
+
+        # Som
         self.channel = pg.mixer.find_channel()
         if self.channel is not None:
             engine_sound = sounds.FLY_SMALL if self.small else sounds.FLY_BIG
             self.channel.play(engine_sound, loops=-1)
 
+    # ... (O resto dos métodos update, fire, draw, kill continuam IGUAIS ao passo anterior) ...
     def update(self, dt: float):
         self.pos += self.dir * self.speed * dt
         self.pos = wrap_pos(self.pos)
         self.rect.center = self.pos
+        if self.shoot_timer > 0:
+            self.shoot_timer -= dt
+
+    def fire(self, target_pos: Vec = None) -> Bullet | None:
+        if self.shoot_timer > 0: return None
+        self.shoot_timer = self.shoot_delay
+        angle = 0.0
+        if self.small and target_pos is not None:
+            diff = target_pos - self.pos
+            angle = math.degrees(math.atan2(diff.y, diff.x)) + uniform(-5, 5)
+        else:
+            angle = uniform(0, 360)
+        dirv = angle_to_vec(angle)
+        spawn_pos = self.pos + dirv * (self.r + 10)
+        vel = dirv * C.UFO_BULLET_SPEED
+        return Bullet(spawn_pos, vel)
 
     def draw(self, surf: pg.Surface):
         w, h = self.r * 2, self.r
@@ -150,7 +200,6 @@ class UFO(pg.sprite.Sprite):
         pg.draw.ellipse(surf, C.WHITE, cup, width=1)
 
     def kill(self) -> None:
-        # Stop UFO sound when it leaves the game
         if hasattr(self, "channel") and self.channel is not None:
             self.channel.stop()
         super().kill()

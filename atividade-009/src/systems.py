@@ -14,6 +14,7 @@ class World:
         # Main sprite groups
         self.ship = Ship(Vec(C.WIDTH / 2, C.HEIGHT / 2))
         self.bullets = pg.sprite.Group()
+        self.enemy_bullets = pg.sprite.Group()
         self.asteroids = pg.sprite.Group()
         self.ufos = pg.sprite.Group()
         self.all_sprites = pg.sprite.Group()
@@ -53,9 +54,18 @@ class World:
     def spawn_ufo(self) -> None:
         """Spawn a UFO at a random side of the screen."""
         small = uniform(0, 1) < 0.5
+        
+        # Define a posição de nascimento (esquerda ou direita)
         y = uniform(0, C.HEIGHT)
         x = 0 if uniform(0, 1) < 0.5 else C.WIDTH
-        ufo = UFO(Vec(x, y), small)
+        
+        # Pega a posição atual do player (se estiver vivo) para usar na mira de movimento
+        # Se o player estiver morto, mira no centro da tela
+        target_pos = self.ship.pos if self.ship.alive else Vec(C.WIDTH/2, C.HEIGHT/2)
+        
+        # Passamos o target_pos para a classe UFO
+        ufo = UFO(Vec(x, y), small, target_pos) 
+        
         self.ufos.add(ufo)
         self.all_sprites.add(ufo)
 
@@ -90,6 +100,14 @@ class World:
         # Update ship control and all sprite logic
         self.ship.control(keys, dt)
         self.all_sprites.update(dt)
+        
+        player_pos = self.ship.pos if self.ship.alive else None
+        for ufo in self.ufos:
+            # Chama a função fire() que criamos no sprites.py
+            bullet = ufo.fire(player_pos)
+            if bullet:
+                self.enemy_bullets.add(bullet) # Adiciona no grupo de tiros inimigos
+                self.all_sprites.add(bullet)   # Adiciona para desenhar na tela
 
         # Timers
         if self.safe > 0:
@@ -114,31 +132,49 @@ class World:
 
     def handle_collisions(self) -> None:
         """Handle all collisions between objects."""
-        # Bullets vs asteroids
+        
+        # --- 1. Balas do Player vs Asteroides ---
         hits = pg.sprite.groupcollide(
             self.asteroids,
             self.bullets,
-            False,
-            True,
+            False, # Asteroides não somem direto (usamos split_asteroid)
+            True,  # Balas somem
             collided=lambda a, b: (a.pos - b.pos).length() < a.r,
         )
         for asteroid, _ in hits.items():
             self.split_asteroid(asteroid)
 
-        # Ship vs asteroids / UFOs
+        # --- 2. Colisões que matam o Player ---
+        # Só checa se o player não estiver invulnerável (renascendo)
         if self.ship.invuln <= 0 and self.safe <= 0:
+            
+            # Player vs Asteroides
             for asteroid in self.asteroids:
-                if (asteroid.pos - self.ship.pos).length() < \
-                        (asteroid.r + self.ship.r):
+                if (asteroid.pos - self.ship.pos).length() < (asteroid.r + self.ship.r):
                     self.ship_die()
                     break
 
-            for ufo in self.ufos:
-                if (ufo.pos - self.ship.pos).length() < (ufo.r + self.ship.r):
+            # Player vs UFOs
+            if self.ship.alive:
+                for ufo in self.ufos:
+                    if (ufo.pos - self.ship.pos).length() < (ufo.r + self.ship.r):
+                        self.ship_die()
+                        break
+            
+            # Player vs Balas Inimigas (Enemy Bullets)
+            if self.ship.alive:
+                # Checa se alguma bala inimiga tocou no player
+                hits = pg.sprite.spritecollide(
+                    self.ship, 
+                    self.enemy_bullets, 
+                    True, # A bala some ao bater
+                    collided=pg.sprite.collide_circle # Usa o raio/rect para colisão
+                )
+                if hits:
                     self.ship_die()
-                    break
 
-        # Bullets vs UFO
+        # --- 3. Balas do Player vs UFOs ---
+        # (Usa listas manuais para calcular a distância circular customizada)
         for ufo in list(self.ufos):
             for bullet in list(self.bullets):
                 if (ufo.pos - bullet.pos).length() < (ufo.r + bullet.r):
@@ -150,6 +186,25 @@ class World:
                     self.score += score
                     ufo.kill()
                     bullet.kill()
+
+        # --- 4. UFOs vs Asteroides (Onde estava o erro) ---
+        # Verifica colisão entre UFOs e Asteroides
+        crashes = pg.sprite.groupcollide(
+            self.ufos,
+            self.asteroids,
+            True,  # O UFO morre imediatamente
+            False, # O Asteroide será dividido manualmente
+            collided=lambda u, a: (u.pos - a.pos).length() < (u.r + a.r)
+        )
+
+        for ufo, asteroids_hit in crashes.items():
+            # Para o som do UFO se ele morrer
+            if hasattr(ufo, "channel") and ufo.channel:
+                ufo.channel.stop()
+            
+            # Divide os asteroides que ele bateu
+            for asteroid in asteroids_hit:
+                self.split_asteroid(asteroid)
 
     def split_asteroid(self, asteroid: Asteroid) -> None:
         """Split an asteroid into smaller pieces and add score."""
