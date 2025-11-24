@@ -60,9 +60,11 @@ class Game:
 
     def draw_menu(self):
         text(self.screen, self.big, "ASTEROIDS",
-             C.WIDTH // 2 - 150, 180)
+            C.WIDTH // 2 - 150, 180)
         text(self.screen, self.font,
-             "Setas: virar/acelerar  Espaço: tiro  Shift: hiper",
-             160, 300)
+            "Arrow keys: turn/accelerate Space: shoot Shift: hyper",
+            160, 300)
         text(self.screen, self.font,
-             "Pressione qualquer tecla...", 260, 360)
+            "Press any key...", 260, 360)
+        text(self.screen, self.font,
+            "Adinan and Josafa", 360, 460)

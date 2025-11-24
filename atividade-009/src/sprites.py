@@ -7,6 +7,8 @@ import pygame as pg
 import config as C
 from utils import Vec, angle_to_vec, draw_circle, draw_poly, wrap_pos
 
+import sounds
+
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, pos: Vec, vel: Vec):
@@ -127,6 +129,12 @@ class UFO(pg.sprite.Sprite):
         self.rect = pg.Rect(0, 0, self.r * 2, self.r * 2)
         self.dir = Vec(1, 0) if uniform(0, 1) < 0.5 else Vec(-1, 0)
 
+        # Play UFO engine sound when it appears on screen
+        self.channel = pg.mixer.find_channel()
+        if self.channel is not None:
+            engine_sound = sounds.FLY_SMALL if self.small else sounds.FLY_BIG
+            self.channel.play(engine_sound, loops=-1)
+
     def update(self, dt: float):
         self.pos += self.dir * self.speed * dt
         self.pos = wrap_pos(self.pos)
@@ -140,3 +148,9 @@ class UFO(pg.sprite.Sprite):
         cup = pg.Rect(0, 0, w * 0.5, h * 0.7)
         cup.center = (self.pos.x, self.pos.y - h * 0.3)
         pg.draw.ellipse(surf, C.WHITE, cup, width=1)
+
+    def kill(self) -> None:
+        # Stop UFO sound when it leaves the game
+        if hasattr(self, "channel") and self.channel is not None:
+            self.channel.stop()
+        super().kill()
