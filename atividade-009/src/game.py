@@ -65,6 +65,6 @@ class Game:
             "Arrow keys: turn/accelerate Space: shoot Shift: hyper",
             160, 300)
         text(self.screen, self.font,
-            "Press any key...", 260, 360)
+            "Press any key...", 360, 360)
         text(self.screen, self.font,
             "Adinan and Josafa", 360, 460)
