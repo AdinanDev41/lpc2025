@@ -7,13 +7,13 @@ SOUNDS_PATH = BASE_PATH.parent / "sounds"
 
 
 def init_mixer() -> None:
-    """Initialize the mixer if it is not initialized yet."""
+    # Initialize the mixer if it is not initialized yet.
     if not pg.mixer.get_init():
         pg.mixer.init()
 
 
 def load_sound(filename: str, volume: float = 1.0) -> pg.mixer.Sound:
-    """Load a sound from the global sounds folder and set volume."""
+    # Load a sound from the global sounds folder and set volume.
     sound_path = SOUNDS_PATH / filename
     sound = pg.mixer.Sound(sound_path)
     sound.set_volume(volume)

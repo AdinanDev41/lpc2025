@@ -5,17 +5,17 @@ FPS = 60
 
 # Jogo
 START_LIVES = 3
-SAFE_SPAWN_TIME = 2.0  # s de invulnerabilidade ao renascer
-WAVE_DELAY = 2.0       # s entre ondas
+SAFE_SPAWN_TIME = 2.0  # s of invulnerability upon rebirth
+WAVE_DELAY = 2.0       # s between waves
 
 # Nave
 SHIP_RADIUS = 15
 SHIP_TURN_SPEED = 220.0  # deg/s
 SHIP_THRUST = 220.0      # px/s^2
 SHIP_FRICTION = 0.995
-SHIP_FIRE_RATE = 0.2     # s entre tiros
+SHIP_FIRE_RATE = 0.2     # s between shoot
 SHIP_BULLET_SPEED = 420.0
-HYPERSPACE_COST = 250    # pontos negativos
+HYPERSPACE_COST = 250    # negative points 
 
 # Asteroides
 AST_VEL_MIN = 30.0
@@ -26,13 +26,13 @@ AST_SIZES = {
     "S": {"r": 12, "score": 100, "split": []},
 }
 
-# Tiro
+# Shoot
 BULLET_RADIUS = 2
 BULLET_TTL = 1.0
 MAX_BULLETS = 4
 
 # UFO
-UFO_SPAWN_EVERY = 15.0  # segundos
+UFO_SPAWN_EVERY = 15.0  # seconds
 UFO_SPEED = 80.0
 UFO_BIG = {"r": 18, "score": 200, "aim": 0.2}
 UFO_SMALL = {"r": 12, "score": 1000, "aim": 0.6}
@@ -40,10 +40,10 @@ UFO_FIRE_RATE_SMALL = 1.5
 UFO_FIRE_RATE_BIG = 3.0
 UFO_BULLET_SPEED = 400.0
 
-# Cores (R, G, B)
+# Color (R, G, B)
 WHITE = (240, 240, 240)
 GRAY = (120, 120, 120)
 BLACK = (0, 0, 0)
 
-# Aleatoriedade
-RANDOM_SEED = None  # ou defina um int para reprodutibilidade
+# Random
+RANDOM_SEED = None  # Or define an int for reproducibility.
