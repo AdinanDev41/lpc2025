@@ -1,10 +1,10 @@
 
-from game import Game
+# from game import Game
 
 
-def main():
-    Game().run()
+# def main():
+#    Game().run()
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#    main()
