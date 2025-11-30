@@ -1,4 +1,3 @@
-
 import math
 from random import random, uniform
 from typing import Iterable, Tuple
@@ -11,20 +10,24 @@ Vec = pg.math.Vector2
 
 
 def wrap_pos(pos: Vec) -> Vec:
+    """Faz o objeto atravessar a tela e aparecer do outro lado."""
     return Vec(pos.x % C.WIDTH, pos.y % C.HEIGHT)
 
 
 def angle_to_vec(deg: float) -> Vec:
+    """Converte graus em um vetor unitário."""
     rad = math.radians(deg)
     return Vec(math.cos(rad), math.sin(rad))
 
 
 def rand_unit_vec() -> Vec:
+    """Retorna um vetor aleatório de tamanho 1."""
     a = uniform(0, math.tau)
     return Vec(math.cos(a), math.sin(a))
 
 
 def rand_edge_pos() -> Vec:
+    """Retorna uma posição aleatória nas bordas da tela."""
     if random() < 0.5:
         x = uniform(0, C.WIDTH)
         y = 0 if random() < 0.5 else C.HEIGHT
@@ -42,7 +45,7 @@ def draw_circle(surface: pg.Surface, pos: Vec, r: int):
     pg.draw.circle(surface, C.MUSTARD_YELLOW, pos, r, width=1)
 
 
-def text(surface: pg.Surface, font: pg.font.Font, s: str, x: int, y: int):
-    surf = font.render(s, True, C.MUSTARD_YELLOW)
+def text(surface: pg.Surface, font: pg.font.Font, s: str, x: int, y: int, color=C.MUSTARD_YELLOW):
+    surf = font.render(s, True, color)
     rect = surf.get_rect(topleft=(x, y))
     surface.blit(surf, rect)

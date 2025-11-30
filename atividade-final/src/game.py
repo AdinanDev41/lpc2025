@@ -1,4 +1,3 @@
-
 import random
 import sys
 from dataclasses import dataclass
@@ -18,10 +17,21 @@ class Scene:
 class Game:
     def __init__(self):
         pg.init()
+        
+        # --- Inicialização do Joystick ---
+        pg.joystick.init()
+        self.joystick = None
+        if pg.joystick.get_count() > 0:
+            self.joystick = pg.joystick.Joystick(0)
+            self.joystick.init()
+            print(f"Joystick Conectado: {self.joystick.get_name()}")
+        else:
+            print("Nenhum Joystick detectado (Use teclado).")
+
         if C.RANDOM_SEED is not None:
             random.seed(C.RANDOM_SEED)
         self.screen = pg.display.set_mode((C.WIDTH, C.HEIGHT))
-        pg.display.set_caption("Asteroides")
+        pg.display.set_caption("Survival Asteroids - Rounds")
         self.clock = pg.time.Clock()
         self.font = pg.font.SysFont("consolas", 20)
         self.big = pg.font.SysFont("consolas", 48)
@@ -38,13 +48,25 @@ class Game:
                 if e.type == pg.KEYDOWN and e.key == pg.K_ESCAPE:
                     pg.quit()
                     sys.exit(0)
+                
+                # --- EVENTOS NO JOGO ---
                 if self.scene.name == "play":
+                    # Teclado (Backup)
                     if e.type == pg.KEYDOWN and e.key == pg.K_SPACE:
                         self.world.try_fire()
                     if e.type == pg.KEYDOWN and e.key == pg.K_LSHIFT:
                         self.world.hyperspace()
+                    
+                    # Joystick (Botões de clique único)
+                    if e.type == pg.JOYBUTTONDOWN:
+                        # Botão 1 ('B' ou 'Bola') -> Hiperspaço
+                        if e.button == 1: 
+                            self.world.hyperspace()
+                        # Start (Botão 7) -> Pausa ou Menu (opcional)
+
+                # --- EVENTOS NO MENU ---
                 elif self.scene.name == "menu":
-                    if e.type == pg.KEYDOWN:
+                    if e.type == pg.KEYDOWN or e.type == pg.JOYBUTTONDOWN:
                         self.scene = Scene("play")
 
             keys = pg.key.get_pressed()
@@ -53,18 +75,19 @@ class Game:
             if self.scene.name == "menu":
                 self.draw_menu()
             elif self.scene.name == "play":
-                self.world.update(dt, keys)
+                self.world.update(dt, keys, self.joystick)
                 self.world.draw(self.screen, self.font)
 
             pg.display.flip()
 
     def draw_menu(self):
-        text(self.screen, self.big, "survival game",
-            C.WIDTH // 2 - 150, 180)
+        text(self.screen, self.big, "SURVIVAL ROUNDS",
+            C.WIDTH // 2 - 180, 180)
         text(self.screen, self.font,
-            "Arrow keys: turn/accelerate Space: shoot Shift: hyper",
-            160, 300)
+            "Keyboard: Arrows move, Space shoot",
+            200, 300, C.WHITE)
         text(self.screen, self.font,
-            "Press any key...", 360, 360)
+            "Gamepad: Stick move, RT accel, A shoot",
+            200, 330, C.WHITE)
         text(self.screen, self.font,
-            "Adinan and Josafa", 360, 460)
+            "Press any key to start...", 360, 420)
