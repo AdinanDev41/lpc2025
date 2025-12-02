@@ -1,31 +1,34 @@
 from pathlib import Path
 import pygame as pg
 
-BASE_PATH = Path(__file__).resolve().parent
-# Ajuste o caminho se necessário. Aqui assume que 'sounds' está uma pasta acima ou na mesma raiz.
-SOUNDS_PATH = BASE_PATH.parent / "sounds" 
-if not SOUNDS_PATH.exists():
-    SOUNDS_PATH = BASE_PATH / "sounds" # Tenta na mesma pasta
 
-def init_mixer() -> None:
-    if not pg.mixer.get_init():
-        pg.mixer.init()
+BASE_PATH = Path(__file__).resolve().parent
+SOUNDS_PATH = BASE_PATH.parent / "sounds"
+
 
 def load_sound(filename: str, volume: float = 1.0) -> pg.mixer.Sound:
+    # Loads a sound file from the sounds folder.
+    path = SOUNDS_PATH / filename
+
     try:
-        sound_path = SOUNDS_PATH / filename
-        sound = pg.mixer.Sound(sound_path)
+        sound = pg.mixer.Sound(path)
         sound.set_volume(volume)
         return sound
     except FileNotFoundError:
-        print(f"AVISO: Som {filename} não encontrado em {SOUNDS_PATH}")
-        # Retorna um som vazio para não crashar o jogo
-        return pg.mixer.Sound(buffer=bytearray([0]*100))
+        print(f"[WARN] Sound '{filename}' not found at '{path}'")
+        return pg.mixer.Sound(buffer=b"")
+    except Exception as e:
+        print(f"[WARN] Failed to load sound '{filename}': {e}")
+        return pg.mixer.Sound(buffer=b"")
 
-init_mixer()
+
+if not pg.mixer.get_init():
+    pg.mixer.init()
+
 
 SHOT = load_sound("fire.wav", volume=0.6)
-BREAK_LARGE = load_sound("bangLarge.wav", volume=0.9)
-BREAK_MEDIUM = load_sound("bangMedium.wav", volume=0.8)
-FLY_BIG = load_sound("flyBig.wav", volume=0.1) # Usado para inimigos gerais agora
-FLY_SMALL = load_sound("flySmall.wav", volume=0.1)
+BREAK_LARGE = load_sound("bangLarge.wav", volume=0.7)
+BREAK_MEDIUM = load_sound("bangMedium.wav", volume=0.7)
+
+# New engine/flight sound for the UFO
+FLY_NAVE = load_sound("flyNave.wav", volume=0.3)

@@ -18,7 +18,7 @@ class Game:
     def __init__(self):
         pg.init()
         
-        # --- Inicialização do Joystick ---
+        # Joystick Initialization
         pg.joystick.init()
         self.joystick = None
         if pg.joystick.get_count() > 0:
@@ -49,28 +49,28 @@ class Game:
                     pg.quit()
                     sys.exit(0)
                 
-                # --- EVENTOS NO JOGO ---
+                # Events Game
                 if self.scene.name == "play":
-                    # Teclado (Backup)
+                    # Keyboard (Backup)
                     if e.type == pg.KEYDOWN and e.key == pg.K_SPACE:
                         self.world.try_fire()
                     if e.type == pg.KEYDOWN and e.key == pg.K_LSHIFT:
                         self.world.hyperspace()
                     
-                    # Joystick (Botões de clique único)
+                    # Joystick (One-click buttons)
                     if e.type == pg.JOYBUTTONDOWN:
-                        # Botão 1 ('B' ou 'Bola') -> Hiperspaço
+                        # Botão 1 ('B' or 'Ball')
                         if e.button == 1: 
                             self.world.hyperspace()
-                        # Start (Botão 7) -> Pausa ou Menu (opcional)
+                        # Start (Button 7) -> Pause or Menu
 
-                # --- EVENTOS NO MENU ---
+                # Menu Event
                 elif self.scene.name == "menu":
                     if e.type == pg.KEYDOWN or e.type == pg.JOYBUTTONDOWN:
                         self.scene = Scene("play")
 
             keys = pg.key.get_pressed()
-            self.screen.fill(C.SEA_GREEN)
+            self.screen.fill(C.BLACK)
 
             if self.scene.name == "menu":
                 self.draw_menu()
@@ -91,3 +91,5 @@ class Game:
             200, 330, C.WHITE)
         text(self.screen, self.font,
             "Press any key to start...", 360, 420)
+        text(self.screen, self.font,
+            "Josafa and Adinan", 360, 540)
